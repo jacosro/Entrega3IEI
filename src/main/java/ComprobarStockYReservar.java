@@ -18,35 +18,35 @@ public class ComprobarStockYReservar implements TaskListener {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
 				ResultSet resultPedidos = statementPedidos.executeQuery();
 
-				while(resultPedidos.next()) {
-					int lineapedido = resultPedidos.getInt("Articulos_idArticulos");
+				while (resultPedidos.next()) {
+					int idArticulo = resultPedidos.getInt("Articulos_idArticulos");
 					int cantidadPedido = resultPedidos.getInt("Cantidad");
 
-					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?";
+					String SQLArticulos = "SELECT * FROM `Entrega3procesos`.`articulos` WHERE idArticulos=?";
 					PreparedStatement statementArticulos = conn.prepareStatement(SQLArticulos);
-					statementArticulos.setInt(1, lineapedido);
+					statementArticulos.setInt(1, idArticulo);
 					ResultSet resultArticulos = statementPedidos.executeQuery();
 
-					if(resultArticulos.next()) {
+					if (resultArticulos.next()) {
 						int stockArticulo = resultArticulos.getInt("Stock");
 						int reservadoArticulo = resultArticulos.getInt("Reservado");
 
-						if((stockArticulo - reservadoArticulo) >= cantidadPedido) {
-							String SQLReserva = "UPDATE articulos SET Reservado=? WHERE idArticulos=?";
+						if ((stockArticulo - reservadoArticulo) >= cantidadPedido) {
+							String SQLReserva = "UPDATE `Entrega3procesos`.`articulos` SET Reservado=? WHERE idArticulos=?";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, reservadoArticulo + cantidadPedido);
-							statementReserva.setInt(2, lineapedido);
+							statementReserva.setInt(2, idArticulo);
 							statementReserva.executeQuery();
 						} else {
 							String SQLReserva = "UPDATE `Entrega3procesos`.`lineapedidos` SET Cantidad=? WHERE Articulos_idArticulos=?";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, -1);
-							statementReserva.setInt(2, lineapedido);
+							statementReserva.setInt(2, idArticulo);
 							statementReserva.executeQuery();
 						}
 					} // fin if externo
 
-				}// fin while
+				} // fin while
 
 			} catch (SQLException e) {
 				e.printStackTrace();

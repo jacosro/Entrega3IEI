@@ -11,9 +11,6 @@ import javax.mail.internet.MimeMessage;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-/**
- * No se muestran los imports
- */
 public class EnviarMailRechazo implements TaskListener {
 	private static final long serialVersionUID = 1L;
 
@@ -23,8 +20,7 @@ public class EnviarMailRechazo implements TaskListener {
 		final String password = "socketesTeam21122017";
 		System.out.println("Inicio de enviÌ�o de correo");
 
-		String email = (String) delegado.getExecution().getVariable("IDEmail");
-		String asunto = (String) delegado.getExecution().getVariable("IDAsunto");
+		String email = (String) delegado.getExecution().getVariable("IDCorreoElectronico");
 		String cuerpo = (String) delegado.getExecution().getVariable("IDCuerpo");
 
 		Properties props = new Properties();
@@ -37,12 +33,12 @@ public class EnviarMailRechazo implements TaskListener {
 				return new PasswordAuthentication(username, password);
 			}
 		});
+		
 		try {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("jsanchezdiaz@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email)); // a quieÌ�n se enviÌ�a.
-																							// message.setSubject(asunto);
-			message.setText("Su pedido ha sido rechazado ya que no existe ninguno de los articulos solicitados.");
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email)); 
+			message.setText("PEDIDO RECHAZADO\n" + cuerpo);
 			Transport.send(message);
 		} catch (MessagingException e) {
 			System.out.println("ExcepcioÌ�n detectada" + e);
