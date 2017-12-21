@@ -22,7 +22,7 @@ public class ServicioClientes {
 				Conexion.cerrarConexion();
 				return (encontrado);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e.toString());
 			}
 		}
 		Conexion.cerrarConexion();
@@ -52,7 +52,7 @@ public class ServicioClientes {
 				clave = claves.getInt(1);
 				return clave;
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e.toString());
 			} finally {
 				Conexion.cerrarConexion();
 			}

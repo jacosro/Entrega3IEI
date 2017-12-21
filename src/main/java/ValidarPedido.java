@@ -42,7 +42,7 @@ public class ValidarPedido implements JavaDelegate {
 				Conexion.cerrarConexion();
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e.toString());
 			}
 
 			try {
@@ -56,7 +56,7 @@ public class ValidarPedido implements JavaDelegate {
 				Conexion.cerrarConexion();
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e.toString());
 			}
 
 		}

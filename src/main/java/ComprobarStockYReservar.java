@@ -49,7 +49,7 @@ public class ComprobarStockYReservar implements TaskListener {
 				} // fin while
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e.toString());
 			}
 
 			Conexion.cerrarConexion();

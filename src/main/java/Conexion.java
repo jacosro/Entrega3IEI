@@ -15,7 +15,7 @@ public class Conexion {
 			conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/Entrega3Procesos", "root", "root");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.write(e.toString());
 		}
 		return conexion;
 	}

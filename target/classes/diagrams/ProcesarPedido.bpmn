@@ -5,21 +5,21 @@
       <activiti:executionListener event="complete" class="AltaCliente"></activiti:executionListener>
     </extensionElements>
     <startEvent id="startevent1" name="Start"></startEvent>
-    <userTask id="introducirCliente" name="Introducir Cliente">
+    <userTask id="introducirCliente" name="Introducir Cliente" activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="IDCliente" name="NombreCliente" type="integer" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCliente" name="IDCliente" type="long" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="esClienteNuevo" name="¿Cliente nuevo?"></exclusiveGateway>
-    <serviceTask id="buscarCliente" name="Buscar Cliente" activiti:class="BuscarCliente" activiti:resultVariableName="encontrado"></serviceTask>
-    <userTask id="altaCliente" name="Alta Cliente">
+    <serviceTask id="buscarCliente" name="Buscar Cliente" activiti:class="BuscarCliente"></serviceTask>
+    <userTask id="altaCliente" name="Alta Cliente" activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="IDNombre" name="Nombre" type="String" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDDireccion" name="Direccion" type="String" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDFechaAlta" name="Fecha de Alta" type="String" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDCorreoElectronico" name="Correo Electronico" type="String" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDTarjeta" name="Tarjeta de Credito" type="String" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDEmisor" name="Emisor" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDNombre" name="Nombre" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDDireccion" name="Direccion" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDFechaAlta" name="Fecha de Alta" type="date" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCorreoElectronico" name="Correo Electronico" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDTarjeta" name="Tarjeta de Credito" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDEmisor" name="Emisor" type="string" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="esClienteEncontrado" name="¿Cliente encontrado?"></exclusiveGateway>
@@ -32,7 +32,7 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDCliente==0}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flowBuscarClienteAEsClienteEncontrado" name="¿Encontrado?" sourceRef="buscarCliente" targetRef="esClienteEncontrado"></sequenceFlow>
-    <endEvent id="clienteNoExistenteEnd" name="Cliente no existe. Pedido rechazado"></endEvent>
+    <endEvent id="clienteNoExistenteEnd" name="Cliente no existe"></endEvent>
     <sequenceFlow id="flowEsClienteEncontradoNo" name="No" sourceRef="esClienteEncontrado" targetRef="clienteNoExistenteEnd">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${encontrado==false}]]></conditionExpression>
     </sequenceFlow>
@@ -43,28 +43,43 @@
     </sequenceFlow>
     <exclusiveGateway id="joiner2" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flowJoiner1AJoiner2" sourceRef="joiner1" targetRef="joiner2"></sequenceFlow>
-    <userTask id="codCant" name="Introducir código artículo y cantidad">
+    <userTask id="codCant" name="Introducir código artículo y cantidad" activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="IDCodigo" name="Codigo del articulo" type="integer" required="true"></activiti:formProperty>
-        <activiti:formProperty id="IDCantidad" name="Cantidad" type="integer" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCodigo" name="Codigo del articulo" type="long" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCantidad" name="Cantidad" type="long" required="true"></activiti:formProperty>
         <activiti:formProperty id="IDMas" name="Deseo introducir más artículos" type="boolean"></activiti:formProperty>
         <activiti:taskListener event="complete" class="IntroducirCodigoArticulo"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="flowJoiner2ACodCant" sourceRef="joiner2" targetRef="codCant"></sequenceFlow>
-    <exclusiveGateway id="masArticulos" name="¿Más Artículos?"></exclusiveGateway>
+    <exclusiveGateway id="masArticulos" name="Más Artículos?"></exclusiveGateway>
     <sequenceFlow id="flowCodCantAMasArticulos" name="¿Más Artículos?" sourceRef="codCant" targetRef="masArticulos"></sequenceFlow>
     <sequenceFlow id="flowMasArticulosSi" name="Sí" sourceRef="masArticulos" targetRef="joiner2">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDMas==true}]]></conditionExpression>
     </sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
-    <userTask id="infoRechazoACliente" name="Informar Rechazo a Cliente"></userTask>
-    <sequenceFlow id="flowEsValidoNo" name="No" sourceRef="exclusivegateway1" targetRef="infoRechazoACliente"></sequenceFlow>
+    <userTask id="infoRechazoACliente" name="Informar Rechazo a Cliente" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:formProperty id="IDCuerpo" name="Motivo del rechazo" type="string" writable="false"></activiti:formProperty>
+        <activiti:taskListener event="complete" class="EnviarMailRechazo"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flowEsValidoNo" name="No" sourceRef="exclusivegateway1" targetRef="infoRechazoACliente">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pedidoValido==false}]]></conditionExpression>
+    </sequenceFlow>
     <endEvent id="pedidoRechazadoEnd" name="End"></endEvent>
     <sequenceFlow id="flowInfoRechazoAClienteAEnd" name="Pedido Rechazado" sourceRef="infoRechazoACliente" targetRef="pedidoRechazadoEnd"></sequenceFlow>
-    <serviceTask id="comprobarStockYReservar" name="Comprobar Stock y Reservar"></serviceTask>
-    <sequenceFlow id="flowInfoRechazoAClienteAStock" sourceRef="infoRechazoACliente" targetRef="comprobarStockYReservar"></sequenceFlow>
-    <userTask id="usertask1" name="Informar Cliente fecha estimada de Entrega"></userTask>
+    <serviceTask id="comprobarStockYReservar" name="Comprobar Stock y Reservar" activiti:class="ComprobarStockYReservar"></serviceTask>
+    <userTask id="usertask1" name="Informar Cliente fecha estimada de Entrega" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:formProperty id="IDTiempoEntrega" name="TiempoEntrega" type="enum" required="true">
+          <activiti:value id="IDUnaSemana" name="Una semana"></activiti:value>
+          <activiti:value id="IDUnMes" name="Un mes"></activiti:value>
+          <activiti:value id="IDDosMeses" name="Dos meses"></activiti:value>
+        </activiti:formProperty>
+        <activiti:taskListener event="complete" class="EnviarCorreo"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flowComprobarStockYReservarAInformarFechaEstimada" sourceRef="comprobarStockYReservar" targetRef="usertask1"></sequenceFlow>
     <endEvent id="pedidoProcesadoEnd" name="Pedido Procesado"></endEvent>
     <sequenceFlow id="flowInformarAPedidoProcesadoEnd" name="Pedido Procesado" sourceRef="usertask1" targetRef="pedidoProcesadoEnd"></sequenceFlow>
@@ -73,6 +88,9 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDMas==false}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow3" sourceRef="validarPedido" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flowEsValidoSI" name="Sí" sourceRef="exclusivegateway1" targetRef="comprobarStockYReservar">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pedidoValido==true}]]></conditionExpression>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
     <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
@@ -221,10 +239,6 @@
           <omgdc:Bounds height="14.0" width="90.0" x="1021.0" y="599.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowInfoRechazoAClienteAStock" id="BPMNEdge_flowInfoRechazoAClienteAStock">
-        <omgdi:waypoint x="1018.0" y="492.0"></omgdi:waypoint>
-        <omgdi:waypoint x="885.0" y="492.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flowComprobarStockYReservarAInformarFechaEstimada" id="BPMNEdge_flowComprobarStockYReservarAInformarFechaEstimada">
         <omgdi:waypoint x="780.0" y="492.0"></omgdi:waypoint>
         <omgdi:waypoint x="719.0" y="492.0"></omgdi:waypoint>
@@ -240,12 +254,20 @@
         <omgdi:waypoint x="1070.0" y="217.0"></omgdi:waypoint>
         <omgdi:waypoint x="1070.0" y="280.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="1089.0" y="223.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="13.0" x="1089.0" y="223.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
         <omgdi:waypoint x="1070.0" y="335.0"></omgdi:waypoint>
         <omgdi:waypoint x="1070.0" y="380.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsValidoSI" id="BPMNEdge_flowEsValidoSI">
+        <omgdi:waypoint x="1050.0" y="400.0"></omgdi:waypoint>
+        <omgdi:waypoint x="968.0" y="399.0"></omgdi:waypoint>
+        <omgdi:waypoint x="832.0" y="460.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="9.0" x="1006.0" y="381.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

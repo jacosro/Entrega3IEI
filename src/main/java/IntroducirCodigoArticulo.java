@@ -17,7 +17,7 @@ public class IntroducirCodigoArticulo implements TaskListener {
 			int idLineaPedido = slp.insertarLineaPedido(idCliente, idArticulo, cantidad);
 			execution.setVariable("IDLineaPedido", idLineaPedido);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Log.write(e.toString());
 		}
 	}
 	
