@@ -1,16 +1,18 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class ValidarPedido implements TaskListener {
+public class ValidarPedido implements JavaDelegate {
 
 	@Override
-	public void notify(DelegateTask tareaDelegada) {
+	public void execute(DelegateExecution ejecucion) {
 		boolean valido = false;
 
 		Connection conn = Conexion.abrirConexion();
@@ -60,6 +62,6 @@ public class ValidarPedido implements TaskListener {
 		}
 		Conexion.cerrarConexion();
 
-		tareaDelegada.getExecution().setVariable("pedidoValido", valido);
+		ejecucion.setVariable("pedidoValido", valido);
 	}
 }
