@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="myProcess" name="My process" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="complete" class="AltaCliente"></activiti:executionListener>
+    </extensionElements>
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="introducirCliente" name="Introducir Cliente">
+      <extensionElements>
+        <activiti:formProperty id="IDCliente" name="NombreCliente" type="integer" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="esClienteNuevo" name="¿Cliente nuevo?"></exclusiveGateway>
+    <serviceTask id="buscarCliente" name="Buscar Cliente" activiti:class="BuscarCliente" activiti:resultVariableName="encontrado"></serviceTask>
+    <userTask id="altaCliente" name="Alta Cliente">
+      <extensionElements>
+        <activiti:formProperty id="IDNombre" name="Nombre" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDDireccion" name="Direccion" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDFechaAlta" name="Fecha de Alta" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCorreoElectronico" name="Correo Electronico" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDTarjeta" name="Tarjeta de Credito" type="String" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDEmisor" name="Emisor" type="String" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="esClienteEncontrado" name="¿Cliente encontrado?"></exclusiveGateway>
+    <sequenceFlow id="flowStartAIntroducirCliente" sourceRef="startevent1" targetRef="introducirCliente"></sequenceFlow>
+    <sequenceFlow id="flowIntroducirClienteAEsClienteNuevo" name="¿Cliente Nuevo?" sourceRef="introducirCliente" targetRef="esClienteNuevo"></sequenceFlow>
+    <sequenceFlow id="flowEsClienteNuevoNo" name="No" sourceRef="esClienteNuevo" targetRef="buscarCliente">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDCliente!=0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowEsClienteNuevoSi" name="Sí" sourceRef="esClienteNuevo" targetRef="altaCliente">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDCliente==0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flowBuscarClienteAEsClienteEncontrado" name="¿Encontrado?" sourceRef="buscarCliente" targetRef="esClienteEncontrado"></sequenceFlow>
+    <endEvent id="clienteNoExistenteEnd" name="Cliente no existe. Pedido rechazado"></endEvent>
+    <sequenceFlow id="flowEsClienteEncontradoNo" name="No" sourceRef="esClienteEncontrado" targetRef="clienteNoExistenteEnd">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${encontrado==false}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="joiner1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow1" sourceRef="altaCliente" targetRef="joiner1"></sequenceFlow>
+    <sequenceFlow id="flowEsClienteEncontradoSi" name="Sí" sourceRef="esClienteEncontrado" targetRef="joiner1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${encontrado==true}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="joiner2" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flowJoiner1AJoiner2" sourceRef="joiner1" targetRef="joiner2"></sequenceFlow>
+    <userTask id="codCant" name="Introducir código artículo y cantidad">
+      <extensionElements>
+        <activiti:formProperty id="IDCodigo" name="Codigo del articulo" type="integer" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDCantidad" name="Cantidad" type="integer" required="true"></activiti:formProperty>
+        <activiti:formProperty id="IDMas" name="Deseo introducir más artículos" type="boolean"></activiti:formProperty>
+        <activiti:taskListener event="complete" class="IntroducirCodigoArticulo"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flowJoiner2ACodCant" sourceRef="joiner2" targetRef="codCant"></sequenceFlow>
+    <exclusiveGateway id="masArticulos" name="¿Más Artículos?"></exclusiveGateway>
+    <sequenceFlow id="flowCodCantAMasArticulos" name="¿Más Artículos?" sourceRef="codCant" targetRef="masArticulos"></sequenceFlow>
+    <sequenceFlow id="flowMasArticulosSi" name="Sí" sourceRef="masArticulos" targetRef="joiner2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${IDMas==true}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="infoRechazoACliente" name="Informar Rechazo a Cliente"></userTask>
+    <sequenceFlow id="flowEsValidoNo" name="No" sourceRef="exclusivegateway1" targetRef="infoRechazoACliente"></sequenceFlow>
+    <endEvent id="pedidoRechazadoEnd" name="End"></endEvent>
+    <sequenceFlow id="flowInfoRechazoAClienteAEnd" name="Pedido Rechazado" sourceRef="infoRechazoACliente" targetRef="pedidoRechazadoEnd"></sequenceFlow>
+    <serviceTask id="comprobarStockYReservar" name="Comprobar Stock y Reservar"></serviceTask>
+    <sequenceFlow id="flowInfoRechazoAClienteAStock" sourceRef="infoRechazoACliente" targetRef="comprobarStockYReservar"></sequenceFlow>
+    <userTask id="usertask1" name="Informar Cliente fecha estimada de Entrega"></userTask>
+    <sequenceFlow id="flowComprobarStockYReservarAInformarFechaEstimada" sourceRef="comprobarStockYReservar" targetRef="usertask1"></sequenceFlow>
+    <endEvent id="pedidoProcesadoEnd" name="Pedido Procesado"></endEvent>
+    <sequenceFlow id="flowInformarAPedidoProcesadoEnd" name="Pedido Procesado" sourceRef="usertask1" targetRef="pedidoProcesadoEnd"></sequenceFlow>
+    <serviceTask id="servicetask1" name="Service Task"></serviceTask>
+    <sequenceFlow id="flow2" sourceRef="masArticulos" targetRef="servicetask1"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="servicetask1" targetRef="exclusivegateway1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+    <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="175.0" y="81.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="introducirCliente" id="BPMNShape_introducirCliente">
+        <omgdc:Bounds height="55.0" width="105.0" x="140.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="esClienteNuevo" id="BPMNShape_esClienteNuevo">
+        <omgdc:Bounds height="40.0" width="40.0" x="290.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="buscarCliente" id="BPMNShape_buscarCliente">
+        <omgdc:Bounds height="55.0" width="105.0" x="400.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="altaCliente" id="BPMNShape_altaCliente">
+        <omgdc:Bounds height="55.0" width="105.0" x="400.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="esClienteEncontrado" id="BPMNShape_esClienteEncontrado">
+        <omgdc:Bounds height="40.0" width="40.0" x="590.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="clienteNoExistenteEnd" id="BPMNShape_clienteNoExistenteEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="651.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="joiner1" id="BPMNShape_joiner1">
+        <omgdc:Bounds height="40.0" width="40.0" x="690.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="joiner2" id="BPMNShape_joiner2">
+        <omgdc:Bounds height="40.0" width="40.0" x="770.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="codCant" id="BPMNShape_codCant">
+        <omgdc:Bounds height="61.0" width="105.0" x="870.0" y="167.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="masArticulos" id="BPMNShape_masArticulos">
+        <omgdc:Bounds height="40.0" width="40.0" x="1050.0" y="177.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="1050.0" y="380.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="infoRechazoACliente" id="BPMNShape_infoRechazoACliente">
+        <omgdc:Bounds height="65.0" width="105.0" x="1018.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="pedidoRechazadoEnd" id="BPMNShape_pedidoRechazadoEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="1053.0" y="560.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="comprobarStockYReservar" id="BPMNShape_comprobarStockYReservar">
+        <omgdc:Bounds height="65.0" width="105.0" x="780.0" y="460.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="75.0" width="135.0" x="584.0" y="455.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="pedidoProcesadoEnd" id="BPMNShape_pedidoProcesadoEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="435.0" y="475.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="1018.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flowStartAIntroducirCliente" id="BPMNEdge_flowStartAIntroducirCliente">
+        <omgdi:waypoint x="192.0" y="116.0"></omgdi:waypoint>
+        <omgdi:waypoint x="192.0" y="170.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowIntroducirClienteAEsClienteNuevo" id="BPMNEdge_flowIntroducirClienteAEsClienteNuevo">
+        <omgdi:waypoint x="245.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="78.0" x="269.0" y="158.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsClienteNuevoNo" id="BPMNEdge_flowEsClienteNuevoNo">
+        <omgdi:waypoint x="330.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="339.0" y="180.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsClienteNuevoSi" id="BPMNEdge_flowEsClienteNuevoSi">
+        <omgdi:waypoint x="310.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="310.0" y="297.0"></omgdi:waypoint>
+        <omgdi:waypoint x="400.0" y="297.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="290.0" y="223.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowBuscarClienteAEsClienteEncontrado" id="BPMNEdge_flowBuscarClienteAEsClienteEncontrado">
+        <omgdi:waypoint x="505.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="67.0" x="519.0" y="170.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsClienteEncontradoNo" id="BPMNEdge_flowEsClienteEncontradoNo">
+        <omgdi:waypoint x="610.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="610.0" y="107.0"></omgdi:waypoint>
+        <omgdi:waypoint x="651.0" y="107.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="619.0" y="159.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="505.0" y="297.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="297.0"></omgdi:waypoint>
+        <omgdi:waypoint x="710.0" y="217.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsClienteEncontradoSi" id="BPMNEdge_flowEsClienteEncontradoSi">
+        <omgdi:waypoint x="630.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="629.0" y="209.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowJoiner1AJoiner2" id="BPMNEdge_flowJoiner1AJoiner2">
+        <omgdi:waypoint x="730.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="770.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowJoiner2ACodCant" id="BPMNEdge_flowJoiner2ACodCant">
+        <omgdi:waypoint x="810.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="870.0" y="197.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowCodCantAMasArticulos" id="BPMNEdge_flowCodCantAMasArticulos">
+        <omgdi:waypoint x="975.0" y="197.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1050.0" y="197.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="78.0" x="1099.0" y="191.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowMasArticulosSi" id="BPMNEdge_flowMasArticulosSi">
+        <omgdi:waypoint x="1070.0" y="177.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="101.0"></omgdi:waypoint>
+        <omgdi:waypoint x="790.0" y="101.0"></omgdi:waypoint>
+        <omgdi:waypoint x="790.0" y="177.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="1050.0" y="159.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowEsValidoNo" id="BPMNEdge_flowEsValidoNo">
+        <omgdi:waypoint x="1070.0" y="420.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="460.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="13.0" x="1080.0" y="429.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowInfoRechazoAClienteAEnd" id="BPMNEdge_flowInfoRechazoAClienteAEnd">
+        <omgdi:waypoint x="1070.0" y="525.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="560.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="90.0" x="1021.0" y="599.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowInfoRechazoAClienteAStock" id="BPMNEdge_flowInfoRechazoAClienteAStock">
+        <omgdi:waypoint x="1018.0" y="492.0"></omgdi:waypoint>
+        <omgdi:waypoint x="885.0" y="492.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowComprobarStockYReservarAInformarFechaEstimada" id="BPMNEdge_flowComprobarStockYReservarAInformarFechaEstimada">
+        <omgdi:waypoint x="780.0" y="492.0"></omgdi:waypoint>
+        <omgdi:waypoint x="719.0" y="492.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flowInformarAPedidoProcesadoEnd" id="BPMNEdge_flowInformarAPedidoProcesadoEnd">
+        <omgdi:waypoint x="584.0" y="492.0"></omgdi:waypoint>
+        <omgdi:waypoint x="470.0" y="492.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="14.0" width="100.0" x="408.0" y="524.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="1070.0" y="217.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="1070.0" y="335.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1070.0" y="380.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
