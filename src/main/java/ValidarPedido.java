@@ -39,8 +39,6 @@ public class ValidarPedido implements JavaDelegate {
 					}
 				}
 
-				Conexion.cerrarConexion();
-
 			} catch (SQLException e) {
 				Log.write(e.toString());
 			}
