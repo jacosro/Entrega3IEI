@@ -42,6 +42,7 @@ public class ServicioLineaPedidos {
 		ResultSet claves = preparedStatement.getGeneratedKeys();
 		claves.next();
 		int res = claves.getInt(1);
+		
 		Conexion.cerrarConexion();
 		return res;
 	}
