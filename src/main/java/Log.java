@@ -3,8 +3,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Log {
 
@@ -33,6 +36,17 @@ public class Log {
 	}
 	
 	public static void write(Exception e) {
-		write(e.toString() + " " + e.getStackTrace()[15]);
+		write(e.toString() + 
+				System.lineSeparator() + 
+				String.join(System.lineSeparator(), mapToString(e.getStackTrace())));
+	}
+	
+	
+	private static String[] mapToString(Object[] a) {
+		List<String> res = new ArrayList<String>(a.length);
+		for (Object o : a) {
+			res.add(o.toString());
+		}
+		return res.toArray(new String[a.length]);
 	}
 }
