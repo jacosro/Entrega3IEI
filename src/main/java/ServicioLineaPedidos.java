@@ -25,8 +25,8 @@ public class ServicioLineaPedidos {
 			// Si no, crear la cabeceraPedido
 			String insertarCabecera = "INSERT INTO cabecerapedidos (FechaPedido, Clientes_idClientes) VALUES (?, ?);";
 			PreparedStatement preparedStatement = connection.prepareStatement(insertarCabecera, Statement.RETURN_GENERATED_KEYS);
-			preparedStatement.setInt(1, idCliente);
-			preparedStatement.setDate(2, new Date(Calendar.getInstance().getTimeInMillis()));
+			preparedStatement.setDate(1, new Date(Calendar.getInstance().getTimeInMillis()));
+			preparedStatement.setInt(2, idCliente);
 			preparedStatement.executeUpdate(insertarCabecera);
 			ResultSet claves = preparedStatement.getGeneratedKeys();
 			claves.next();

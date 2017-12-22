@@ -3,13 +3,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 
-public class ComprobarStockYReservar implements TaskListener {
+public class ComprobarStockYReservar implements JavaDelegate {
 
 	@Override
-	public void notify(DelegateTask tareaDelegada) {
+	public void execute(DelegateExecution ejecucion) {
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
 			String SQLPedidos = "SELECT * FROM lineapedidos;";
