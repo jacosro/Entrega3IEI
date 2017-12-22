@@ -20,11 +20,16 @@ public class Log {
 		return "[" + hh + ":" + mm + ":" + ss + "] ";
 	}
 	
+	private static String getTrace() {
+		StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+		return ste[3].getClassName() + "::" + ste[3].getMethodName() + " line " + ste[3].getLineNumber();
+	}
+	
 	
 	public static void write(String string) {
 		try {
 			PrintWriter pw = new PrintWriter(new FileOutputStream(FILE, true));
-			pw.println(getTime() + string);
+			pw.println(getTime() + string + " at " + getTrace());
 			pw.flush();
 			pw.close();
 		} catch (FileNotFoundException e) {

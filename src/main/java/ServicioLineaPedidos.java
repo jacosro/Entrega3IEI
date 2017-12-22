@@ -22,7 +22,7 @@ public class ServicioLineaPedidos {
 			// Si no, crear la cabeceraPedido
 			String insertarCabecera = "INSERT INTO cabecerapedidos (Clientes_idClientes) VALUES (?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(insertarCabecera, Statement.RETURN_GENERATED_KEYS);
-			preparedStatement.setInt(idCliente, 1);
+			preparedStatement.setInt(1, idCliente);
 			preparedStatement.executeUpdate(insertarCabecera);
 			ResultSet claves = preparedStatement.getGeneratedKeys();
 			claves.next();

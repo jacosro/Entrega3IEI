@@ -8,8 +8,11 @@ import java.util.Date;
 public class ServicioClientes {
 	public boolean buscarCliente(int codCliente) {
 		boolean encontrado = false;
+		Log.write("Abriendo conexion en servicio cliente");
 		Connection conn = Conexion.abrirConexion();
+		Log.write("Conexion es null? " + (conn == null));
 		if (conn != null) {
+			Log.write("Entrado");
 			String SQL = "SELECT idClientes FROM clientes where idClientes = ?";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
