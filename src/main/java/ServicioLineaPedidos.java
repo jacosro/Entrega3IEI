@@ -2,7 +2,10 @@ import com.mysql.jdbc.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.sql.Connection;
+import java.sql.Date;
 
 public class ServicioLineaPedidos {
 	
@@ -20,9 +23,10 @@ public class ServicioLineaPedidos {
 			idCabecera = rs.getInt("idCabeceraPedidos");
 		} else {
 			// Si no, crear la cabeceraPedido
-			String insertarCabecera = "INSERT INTO cabecerapedidos (Clientes_idClientes) VALUES (?);";
+			String insertarCabecera = "INSERT INTO cabecerapedidos (FechaPedido, Clientes_idClientes) VALUES (?, ?);";
 			PreparedStatement preparedStatement = connection.prepareStatement(insertarCabecera, Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setInt(1, idCliente);
+			preparedStatement.setDate(2, new Date(Calendar.getInstance().getTimeInMillis()));
 			preparedStatement.executeUpdate(insertarCabecera);
 			ResultSet claves = preparedStatement.getGeneratedKeys();
 			claves.next();
