@@ -37,6 +37,7 @@ public class ServicioClientes {
 			String Emisor) {
 		int clave = 0;
 		Connection conn = Conexion.abrirConexion();
+		Log.write("Conexion en insertarcliente: " + conn);
 		if (conn != null) {
 			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?);";
 			try {

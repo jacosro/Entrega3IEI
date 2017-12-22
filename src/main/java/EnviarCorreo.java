@@ -60,10 +60,10 @@ public class EnviarCorreo implements TaskListener {
 
 			System.out.println("Inicio de enviÌ�o de correo");
 	
-			String email = (String) delegado.getExecution().getVariable("IDEmail");
+			String email = (String) delegado.getExecution().getVariable("IDCorreoElectronico");
 			String asunto = (String) delegado.getExecution().getVariable("IDAsunto");
 			String cuerpo = (String) delegado.getExecution().getVariable("IDCuerpo");
-			int tiempoEntrega = Integer.parseInt((String) delegado.getExecution().getVariable("IDTiempoEntrega"));
+			String tiempoEntrega = (String) delegado.getExecution().getVariable("IDTiempoEntrega");
 		
 			final String username = "soquetesTim@gmail.com";
 			final String password = "SocketesTeam21122017";
@@ -76,6 +76,7 @@ public class EnviarCorreo implements TaskListener {
 	        props.put("mail.smtp.user", username);
 			Session session = Session.getDefaultInstance(props, null);
 			
+			Log.write(email);
 			try {
 				Message message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(username));
@@ -84,8 +85,10 @@ public class EnviarCorreo implements TaskListener {
 				message.setText("En un plazo de " + tiempoEntrega + " le enviaremos los siguientes articulos:" + "\n" + mailBody);
 				Transport.send(message);
 			} catch (MessagingException e) {
-				System.out.println("ExcepcioÌ�n detectada" + e);
+				Log.write(e);
 				throw new RuntimeException(e);
+			} catch (Exception e) {
+				Log.write(e);
 			}
 		}
 	}
