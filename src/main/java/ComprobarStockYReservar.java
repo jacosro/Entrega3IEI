@@ -51,7 +51,7 @@ public class ComprobarStockYReservar implements JavaDelegate {
 				} // fin while
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e);
 			}
 
 			Conexion.cerrarConexion();

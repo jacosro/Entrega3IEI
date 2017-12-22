@@ -54,7 +54,7 @@ public class EnviarCorreo implements TaskListener {
 				}
 
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e);
 			}
 			Conexion.cerrarConexion();
 

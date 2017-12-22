@@ -8,8 +8,11 @@ import java.util.Date;
 public class ServicioClientes {
 	public boolean buscarCliente(int codCliente) {
 		boolean encontrado = false;
+		Log.write("Abriendo conexion en servicio cliente");
 		Connection conn = Conexion.abrirConexion();
+		Log.write("Conexion es null? " + (conn == null));
 		if (conn != null) {
+			Log.write("Entrado");
 			String SQL = "SELECT idClientes FROM clientes where idClientes = ?;";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
@@ -22,7 +25,7 @@ public class ServicioClientes {
 				Conexion.cerrarConexion();
 				return (encontrado);
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e);
 			}
 		}
 		Conexion.cerrarConexion();
@@ -50,9 +53,10 @@ public class ServicioClientes {
 				ResultSet claves = statement.getGeneratedKeys();
 				claves.next();
 				clave = claves.getInt(1);
+				Log.write("Cliente insertado");
 				return clave;
 			} catch (SQLException e) {
-				e.printStackTrace();
+				Log.write(e);
 			} finally {
 				Conexion.cerrarConexion();
 			}
