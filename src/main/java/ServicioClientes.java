@@ -13,7 +13,7 @@ public class ServicioClientes {
 		Log.write("Conexion es null? " + (conn == null));
 		if (conn != null) {
 			Log.write("Entrado");
-			String SQL = "SELECT idClientes FROM clientes where idClientes = ?;";
+			String SQL = "SELECT * FROM clientes where idClientes = ?;";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
 				statement.setInt(1, codCliente);
