@@ -6,8 +6,8 @@ import java.sql.Statement;
 import java.util.Date;
 
 public class ServicioClientes {
-	public boolean buscarCliente(int codCliente) {
-		boolean encontrado = false;
+	public Cliente buscarCliente(int codCliente) {
+		Cliente encontrado = null;
 		Log.write("Abriendo conexion en servicio cliente");
 		Connection conn = Conexion.abrirConexion();
 		Log.write("Conexion es null? " + (conn == null));
@@ -19,9 +19,10 @@ public class ServicioClientes {
 				statement.setInt(1, codCliente);
 				ResultSet result = statement.executeQuery();
 				if (result.next())
-					encontrado = true;
+					encontrado = new Cliente(result.getInt(0), result.getString(1), result.getString(2), result.getDate(3),
+							result.getString(4), result.getString(5), result.getString(6));
 				else
-					encontrado = false;
+					encontrado = null;
 				Conexion.cerrarConexion();
 				return (encontrado);
 			} catch (SQLException e) {
@@ -29,7 +30,7 @@ public class ServicioClientes {
 			}
 		}
 		Conexion.cerrarConexion();
-		return false;
+		return encontrado;
 	}
 
 	// A�ade un cliente y devuelve la clave autogenerada del mismo
@@ -37,6 +38,7 @@ public class ServicioClientes {
 			String Emisor) {
 		int clave = 0;
 		Connection conn = Conexion.abrirConexion();
+		Log.write("Conexion en insertarcliente: " + conn);
 		if (conn != null) {
 			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?);";
 			try {

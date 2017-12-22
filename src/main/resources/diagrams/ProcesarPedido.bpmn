@@ -20,6 +20,7 @@
         <activiti:formProperty id="IDCorreoElectronico" name="Correo Electronico" type="string" required="true"></activiti:formProperty>
         <activiti:formProperty id="IDTarjeta" name="Tarjeta de Credito" type="string" required="true"></activiti:formProperty>
         <activiti:formProperty id="IDEmisor" name="Emisor" type="string" required="true"></activiti:formProperty>
+        <activiti:taskListener event="complete" class="AltaCliente"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <exclusiveGateway id="esClienteEncontrado" name="¿Cliente encontrado?"></exclusiveGateway>
@@ -72,11 +73,7 @@
     <serviceTask id="comprobarStockYReservar" name="Comprobar Stock y Reservar" activiti:class="ComprobarStockYReservar"></serviceTask>
     <userTask id="usertask1" name="Informar Cliente fecha estimada de Entrega" activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="IDTiempoEntrega" name="TiempoEntrega" type="enum" required="true">
-          <activiti:value id="IDUnaSemana" name="Una semana"></activiti:value>
-          <activiti:value id="IDUnMes" name="Un mes"></activiti:value>
-          <activiti:value id="IDDosMeses" name="Dos meses"></activiti:value>
-        </activiti:formProperty>
+        <activiti:formProperty id="IDTiempoEntrega" name="TiempoEntrega" type="string" required="true"></activiti:formProperty>
         <activiti:taskListener event="complete" class="EnviarCorreo"></activiti:taskListener>
       </extensionElements>
     </userTask>

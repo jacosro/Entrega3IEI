@@ -8,9 +8,16 @@ public class BuscarCliente implements JavaDelegate {
 		long codCliente = (Long) ejecucion.getVariable("IDCliente");
 		System.out.println("Buscando cliente " + codCliente);
 		ServicioClientes servicio = new ServicioClientes();
-		boolean encontrado = servicio.buscarCliente((int) codCliente);
-		// añadir el resultado al motor.
+		Cliente cliente = servicio.buscarCliente((int) codCliente);
+		boolean encontrado = cliente != null;
+		// aï¿½adir el resultado al motor.
 		System.out.println("Encontrado " + encontrado); 
 		ejecucion.setVariable("encontrado", encontrado); 
+		ejecucion.setVariable("IDCorreoElectronico", cliente.getEmail());
+		ejecucion.setVariable("IDNombre", cliente.getNombre());
+		ejecucion.setVariable("IDDireccion", cliente.getDireccion());
+		ejecucion.setVariable("IDFechaAlta", cliente.getFechaAlta());
+		ejecucion.setVariable("IDTarjeta", cliente.getTarjetaCredito());
+		ejecucion.setVariable("IDEmisor", cliente.getEmisor());
 	}
 }

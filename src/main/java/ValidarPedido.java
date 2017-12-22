@@ -1,10 +1,13 @@
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
+
+import java.util.List;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,25 +23,28 @@ public class ValidarPedido implements JavaDelegate {
 			String SQLPedidos = "SELECT * FROM lineapedidos;";
 
 			try {
-				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
+				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 				ResultSet resultPedidos = statementPedidos.executeQuery();
 
+				List<Integer> idArticulos = new ArrayList<Integer>();
+				
 				while(resultPedidos.next()) {
-					int lineapedido = resultPedidos.getInt("Articulos_idArticulos");
+					idArticulos.add(resultPedidos.getInt("Articulos_idArticulos"));
+				}
 
+				for (Integer id : idArticulos) {
 					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?;";
 					PreparedStatement statementArticulos = conn.prepareStatement(SQLArticulos);
-					statementArticulos.setInt(1, lineapedido);
+					statementArticulos.setInt(1, id);
 					ResultSet resultArticulos = statementPedidos.executeQuery();
-
+					
 					if (!resultArticulos.next()) {
 						String SQLBorrarPedido = "DELETE FROM lineaspedido WHERE Articulos_idArticulos=?;";
 						PreparedStatement statementBorrar = conn.prepareStatement(SQLBorrarPedido);
-						statementArticulos.setInt(1, lineapedido);
+						statementArticulos.setInt(1, id);
 						statementArticulos.executeQuery();
-					}
+					}					
 				}
-
 			} catch (SQLException e) {
 				Log.write(e);
 			}
