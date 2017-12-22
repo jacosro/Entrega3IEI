@@ -13,12 +13,8 @@ public class IntroducirCodigoArticulo implements TaskListener {
 		int cantidad = Integer.parseInt(String.valueOf(execution.getVariable("IDCantidad")));
 		int idCliente = Integer.parseInt(String.valueOf(execution.getVariable("IDCliente")));
 		ServicioLineaPedidos slp = new ServicioLineaPedidos();
-		try {
-			int idLineaPedido = slp.insertarLineaPedido(idCliente, idArticulo, cantidad);
-			execution.setVariable("IDLineaPedido", idLineaPedido);
-		} catch (SQLException e) {
-			Log.write(e.toString());
-		}
+		int idLineaPedido = slp.insertarLineaPedido(idCliente, idArticulo, cantidad);
+		execution.setVariable("IDLineaPedido", idLineaPedido);
 	}
 	
 

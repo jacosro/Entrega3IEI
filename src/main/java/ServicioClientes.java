@@ -13,7 +13,7 @@ public class ServicioClientes {
 		Log.write("Conexion es null? " + (conn == null));
 		if (conn != null) {
 			Log.write("Entrado");
-			String SQL = "SELECT idClientes FROM clientes where idClientes = ?";
+			String SQL = "SELECT idClientes FROM clientes where idClientes = ?;";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
 				statement.setInt(1, codCliente);
@@ -25,7 +25,7 @@ public class ServicioClientes {
 				Conexion.cerrarConexion();
 				return (encontrado);
 			} catch (SQLException e) {
-				Log.write(e.toString());
+				Log.write(e);
 			}
 		}
 		Conexion.cerrarConexion();
@@ -38,7 +38,7 @@ public class ServicioClientes {
 		int clave = 0;
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?)";
+			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?);";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, nombre);
@@ -56,7 +56,7 @@ public class ServicioClientes {
 				Log.write("Cliente insertado");
 				return clave;
 			} catch (SQLException e) {
-				Log.write(e.toString());
+				Log.write(e);
 			} finally {
 				Conexion.cerrarConexion();
 			}

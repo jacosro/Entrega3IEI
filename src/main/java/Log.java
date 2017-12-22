@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class Log {
@@ -20,20 +21,18 @@ public class Log {
 		return "[" + hh + ":" + mm + ":" + ss + "] ";
 	}
 	
-	private static String getTrace() {
-		StackTraceElement[] ste = Thread.currentThread().getStackTrace();
-		return ste[3].getClassName() + "::" + ste[3].getMethodName() + " line " + ste[3].getLineNumber();
-	}
-	
-	
 	public static void write(String string) {
 		try {
 			PrintWriter pw = new PrintWriter(new FileOutputStream(FILE, true));
-			pw.println(getTime() + string + " at " + getTrace());
+			pw.println(getTime() + string);
 			pw.flush();
 			pw.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void write(Exception e) {
+		write(e.toString() + " " + e.getStackTrace()[15]);
 	}
 }
