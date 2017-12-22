@@ -73,15 +73,14 @@ public class EnviarCorreo implements TaskListener {
 			props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", "smtp.gmail.com");
 			props.put("mail.smtp.port", "587");
-			Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(username, password);
-				}
-			});
+	        props.put("mail.smtp.user", username);
+			Session session = Session.getDefaultInstance(props, null);
+			
 			try {
 				Message message = new MimeMessage(session);
 				message.setFrom(new InternetAddress(username));
 				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+				message.setReplyTo(InternetAddress.parse(username, false));
 				message.setText("En un plazo de " + tiempoEntrega + " le enviaremos los siguientes articulos:" + "\n" + mailBody);
 				Transport.send(message);
 			} catch (MessagingException e) {
