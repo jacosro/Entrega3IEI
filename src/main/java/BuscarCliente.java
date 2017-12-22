@@ -13,11 +13,13 @@ public class BuscarCliente implements JavaDelegate {
 		// a�adir el resultado al motor.
 		System.out.println("Encontrado " + encontrado); 
 		ejecucion.setVariable("encontrado", encontrado); 
-		ejecucion.setVariable("IDCorreoElectronico", cliente.getEmail());
-		ejecucion.setVariable("IDNombre", cliente.getNombre());
-		ejecucion.setVariable("IDDireccion", cliente.getDireccion());
-		ejecucion.setVariable("IDFechaAlta", cliente.getFechaAlta());
-		ejecucion.setVariable("IDTarjeta", cliente.getTarjetaCredito());
-		ejecucion.setVariable("IDEmisor", cliente.getEmisor());
+		if (encontrado) {
+			ejecucion.setVariable("IDCorreoElectronico", cliente.getEmail());
+			ejecucion.setVariable("IDNombre", cliente.getNombre());
+			ejecucion.setVariable("IDDireccion", cliente.getDireccion());
+			ejecucion.setVariable("IDFechaAlta", cliente.getFechaAlta());
+			ejecucion.setVariable("IDTarjeta", cliente.getTarjetaCredito());
+			ejecucion.setVariable("IDEmisor", cliente.getEmisor());			
+		}
 	}
 }
