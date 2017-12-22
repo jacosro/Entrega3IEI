@@ -33,10 +33,12 @@ public class EnviarCorreo implements TaskListener {
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
 				ResultSet resultPedidos = statementPedidos.executeQuery();
+				int idCabecera = 0;
 
 				while(resultPedidos.next()) {
 					int lineapedido = resultPedidos.getInt("Articulos_idArticulos");
 					int cantidadPedido = resultPedidos.getInt("Cantidad");
+					idCabecera = resultPedidos.getInt("CabeceraPedidos_idCabeceraPedidos");
 
 					if(cantidadPedido > 0) {
 						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido;
@@ -44,14 +46,26 @@ public class EnviarCorreo implements TaskListener {
 						retraso = true;
 						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido + "(De momento no disponemos de suficiente stock)";
 					}
-
+					
 				}// fin while
 
+				String SQLBorrarPedidos = "DELETE FROM lineapedidos WHERE CabeceraPedidos_idCabeceraPedidos=?";
+				PreparedStatement statementBorrarPedidos = conn.prepareStatement(SQLBorrarPedidos);
+				statementBorrarPedidos.setInt(1, idCabecera);
+				statementBorrarPedidos.executeUpdate();
+				
+				String SQLBorrarCabeceras = "DELETE FROM cabecerapedidos WHERE idCabeceraPedidos=?";
+				PreparedStatement statementBorrarCabeceras = conn.prepareStatement(SQLBorrarCabeceras);
+				statementBorrarCabeceras.setInt(1, idCabecera);
+				statementBorrarCabeceras.executeUpdate();
+
+				
 				if(retraso) {
 					mailBody += "\n\nDebido a que no disponemos de algunos articulos, la entrega se va a "+
 									"retrasar un poco para poder llevarle los productos en una sola entrega." +
 									"\n Disculpe las molestias ;(";
 				}
+				
 
 			} catch (SQLException e) {
 				Log.write(e);
