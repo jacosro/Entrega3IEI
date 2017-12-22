@@ -12,7 +12,7 @@ public class ComprobarStockYReservar implements TaskListener {
 	public void notify(DelegateTask tareaDelegada) {
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQLPedidos = "SELECT * FROM `Entrega3procesos`.`lineapedidos`";
+			String SQLPedidos = "SELECT * FROM lineapedidos";
 
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
@@ -22,7 +22,7 @@ public class ComprobarStockYReservar implements TaskListener {
 					int idArticulo = resultPedidos.getInt("Articulos_idArticulos");
 					int cantidadPedido = resultPedidos.getInt("Cantidad");
 
-					String SQLArticulos = "SELECT * FROM `Entrega3procesos`.`articulos` WHERE idArticulos=?";
+					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?";
 					PreparedStatement statementArticulos = conn.prepareStatement(SQLArticulos);
 					statementArticulos.setInt(1, idArticulo);
 					ResultSet resultArticulos = statementPedidos.executeQuery();
@@ -32,13 +32,13 @@ public class ComprobarStockYReservar implements TaskListener {
 						int reservadoArticulo = resultArticulos.getInt("Reservado");
 
 						if ((stockArticulo - reservadoArticulo) >= cantidadPedido) {
-							String SQLReserva = "UPDATE `Entrega3procesos`.`articulos` SET Reservado=? WHERE idArticulos=?";
+							String SQLReserva = "UPDATE articulos SET Reservado=? WHERE idArticulos=?";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, reservadoArticulo + cantidadPedido);
 							statementReserva.setInt(2, idArticulo);
 							statementReserva.executeQuery();
 						} else {
-							String SQLReserva = "UPDATE `Entrega3procesos`.`lineapedidos` SET Cantidad=? WHERE Articulos_idArticulos=?";
+							String SQLReserva = "UPDATE lineapedidos SET Cantidad=? WHERE Articulos_idArticulos=?";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, -1);
 							statementReserva.setInt(2, idArticulo);

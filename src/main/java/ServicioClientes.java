@@ -10,7 +10,7 @@ public class ServicioClientes {
 		boolean encontrado = false;
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQL = "SELECT idClientes FROM `Entrega3Procesos`.`Clientes` where idClientes = ?";
+			String SQL = "SELECT idClientes FROM clientes where idClientes = ?";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
 				statement.setInt(1, codCliente);
@@ -29,13 +29,13 @@ public class ServicioClientes {
 		return false;
 	}
 
-	// Añade un cliente y devuelve la clave autogenerada del mismo
+	// Aï¿½ade un cliente y devuelve la clave autogenerada del mismo
 	public int insertarCliente(String nombre, String direccion, String Email, java.util.Date FechaAlta, String TarjetaCredito,
 			String Emisor) {
 		int clave = 0;
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQL = "INSERT INTO `Entrega3Procesos`.`Clientes` (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?)";
+			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?)";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, nombre);
