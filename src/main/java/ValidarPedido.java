@@ -45,9 +45,9 @@ public class ValidarPedido implements JavaDelegate {
 
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
-				ResultSet resultPedidos = statementPedidos.executeQuery();
+				ResultSet resultPedidosOtravez = statementPedidos.executeQuery();
 
-				if (resultPedidos.next()) {
+				if (resultPedidosOtravez.next()) {
 					valido = true;
 				}
 
