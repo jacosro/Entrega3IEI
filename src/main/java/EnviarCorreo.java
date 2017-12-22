@@ -41,10 +41,10 @@ public class EnviarCorreo implements TaskListener {
 					idCabecera = resultPedidos.getInt("CabeceraPedidos_idCabeceraPedidos");
 
 					if(cantidadPedido > 0) {
-						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido;
+						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido + "\n";
 					} else {
 						retraso = true;
-						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido + "(De momento no disponemos de suficiente stock)";
+						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido + "(De momento no disponemos de suficiente stock)" + "\n";
 					}
 					
 				}// fin while

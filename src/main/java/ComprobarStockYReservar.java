@@ -35,7 +35,7 @@ public class ComprobarStockYReservar implements JavaDelegate {
 					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?;";
 					PreparedStatement statementArticulos = conn.prepareStatement(SQLArticulos);
 					statementArticulos.setInt(1, i[0]);
-					ResultSet resultArticulos = statementPedidos.executeQuery();
+					ResultSet resultArticulos = statementArticulos.executeQuery();
 
 					if (resultArticulos.next()) {
 						int stockArticulo = resultArticulos.getInt(3);
@@ -45,12 +45,12 @@ public class ComprobarStockYReservar implements JavaDelegate {
 							String SQLReserva = "UPDATE articulos SET Reservado=" + (reservadoArticulo + i[1]) + " WHERE idArticulos=?;";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, i[0]);
-							statementReserva.executeQuery();
+							statementReserva.executeUpdate();
 						} else {
 							String SQLReserva = "UPDATE lineapedidos SET Cantidad=" + -1 + " WHERE Articulos_idArticulos=?;";
 							PreparedStatement statementReserva = conn.prepareStatement(SQLArticulos);
 							statementReserva.setInt(1, i[0]);
-							statementReserva.executeQuery();
+							statementReserva.executeUpdate();
 						}
 					} // fin if externo
 
