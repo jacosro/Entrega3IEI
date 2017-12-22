@@ -12,7 +12,7 @@ public class Conexion {
 			// TODO Auto-generated catch block e.printStackTrace();
 		}
 		try {
-			conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/Entrega3Procesos", "root", "root");
+			conexion = DriverManager.getConnection("jdbc:mysql://localhost/Entrega3Procesos", "root", "root");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			Log.write(e.toString());

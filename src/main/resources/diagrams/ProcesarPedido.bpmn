@@ -60,7 +60,7 @@
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <userTask id="infoRechazoACliente" name="Informar Rechazo a Cliente" activiti:assignee="kermit">
       <extensionElements>
-        <activiti:formProperty id="IDCuerpo" name="Motivo del rechazo" type="string" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="IDCuerpo" name="Motivo del rechazo" type="string" required="true"></activiti:formProperty>
         <activiti:taskListener event="complete" class="EnviarMailRechazo"></activiti:taskListener>
       </extensionElements>
     </userTask>

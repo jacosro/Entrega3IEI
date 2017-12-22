@@ -50,6 +50,7 @@ public class ServicioClientes {
 				ResultSet claves = statement.getGeneratedKeys();
 				claves.next();
 				clave = claves.getInt(1);
+				Log.write("Cliente insertado");
 				return clave;
 			} catch (SQLException e) {
 				Log.write(e.toString());

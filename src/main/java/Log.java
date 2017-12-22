@@ -1,11 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
 public class Log {
 
-	private static final File FILE = new File("log.txt");
+	private static final File FILE = new File("C:\\Users\\Administrador\\Desktop\\log.txt");
 	
 	private static String getTime() {
 		Calendar calendar = Calendar.getInstance();
@@ -21,7 +23,7 @@ public class Log {
 	
 	public static void write(String string) {
 		try {
-			PrintWriter pw = new PrintWriter(FILE);
+			PrintWriter pw = new PrintWriter(new FileOutputStream(FILE, true));
 			pw.println(getTime() + string);
 			pw.flush();
 			pw.close();
