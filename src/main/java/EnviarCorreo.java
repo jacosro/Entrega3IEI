@@ -60,7 +60,7 @@ public class EnviarCorreo implements TaskListener {
 
 			System.out.println("Inicio de enviÌ�o de correo");
 	
-			String email = (String) delegado.getExecution().getVariable("IDEmail");
+			String email = (String) delegado.getExecution().getVariable("IDCorreoelectronico");
 			String asunto = (String) delegado.getExecution().getVariable("IDAsunto");
 			String cuerpo = (String) delegado.getExecution().getVariable("IDCuerpo");
 			int tiempoEntrega = Integer.parseInt((String) delegado.getExecution().getVariable("IDTiempoEntrega"));
