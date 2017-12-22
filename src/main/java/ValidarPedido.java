@@ -21,15 +21,18 @@ public class ValidarPedido implements JavaDelegate {
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
 			String SQLPedidos = "SELECT * FROM lineapedidos;";
-
+			int idCabecera = -1;
+			
 			try {
-				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
 				ResultSet resultPedidos = statementPedidos.executeQuery();
 
 				List<Integer> idArticulos = new ArrayList<Integer>();
 				
 				while(resultPedidos.next()) {
 					idArticulos.add(resultPedidos.getInt("Articulos_idArticulos"));
+					idCabecera = (resultPedidos.getInt("CabeceraPedidos_idCabeceraPedidos"));
+					Log.write(String.valueOf(idCabecera));
 				}
 
 				for (Integer id : idArticulos) {
@@ -39,10 +42,10 @@ public class ValidarPedido implements JavaDelegate {
 					ResultSet resultArticulos = statementPedidos.executeQuery();
 					
 					if (!resultArticulos.next()) {
-						String SQLBorrarPedido = "DELETE FROM lineaspedido WHERE Articulos_idArticulos=?;";
+						String SQLBorrarPedido = "DELETE FROM lineapedidos WHERE Articulos_idArticulos=?;";
 						PreparedStatement statementBorrar = conn.prepareStatement(SQLBorrarPedido);
-						statementArticulos.setInt(1, id);
-						statementArticulos.executeQuery();
+						statementBorrar.setInt(1, id);
+						statementBorrar.executeUpdate();
 					}					
 				}
 			} catch (SQLException e) {
@@ -55,6 +58,11 @@ public class ValidarPedido implements JavaDelegate {
 
 				if (resultPedidosOtravez.next()) {
 					valido = true;
+				} else {
+					String SQLBorrarCabecera = "DELETE FROM cabecerapedidos WHERE idCabeceraPedidos = ?;";
+					PreparedStatement statementBorrar = conn.prepareStatement(SQLBorrarCabecera);
+					statementBorrar.setInt(1, idCabecera);
+					statementBorrar.executeUpdate();				
 				}
 
 				Conexion.cerrarConexion();
