@@ -19,8 +19,8 @@ public class ServicioClientes {
 				statement.setInt(1, codCliente);
 				ResultSet result = statement.executeQuery();
 				if (result.next())
-					encontrado = new Cliente(result.getInt(0), result.getString(1), result.getString(2), result.getDate(3),
-							result.getString(4), result.getString(5), result.getString(6));
+					encontrado = new Cliente(result.getInt(1), result.getString(2), result.getString(3), result.getDate(4),
+							result.getString(5), result.getString(6), result.getString(7));
 				else
 					encontrado = null;
 				Conexion.cerrarConexion();
