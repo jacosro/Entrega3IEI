@@ -74,7 +74,12 @@ public class EnviarCorreo implements TaskListener {
 			props.put("mail.smtp.host", "smtp.gmail.com");
 			props.put("mail.smtp.port", "587");
 	        props.put("mail.smtp.user", username);
-			Session session = Session.getDefaultInstance(props, null);
+	        
+			Session session = Session.getDefaultInstance(props,  new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(username, password);
+				}
+			});
 			
 			Log.write(email);
 			try {
