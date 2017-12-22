@@ -10,7 +10,7 @@ public class ServicioClientes {
 		boolean encontrado = false;
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQL = "SELECT idClientes FROM clientes where idClientes = ?";
+			String SQL = "SELECT idClientes FROM clientes where idClientes = ?;";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL);
 				statement.setInt(1, codCliente);
@@ -35,7 +35,7 @@ public class ServicioClientes {
 		int clave = 0;
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?)";
+			String SQL = "INSERT INTO clientes (Nombre, Direccion, FechaAlta, NumTarjeta, Emisor, Correoelectronico) VALUES (?,?,?,?,?,?);";
 			try {
 				PreparedStatement statement = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, nombre);

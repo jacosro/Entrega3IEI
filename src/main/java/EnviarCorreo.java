@@ -28,7 +28,7 @@ public class EnviarCorreo implements TaskListener {
 
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQLPedidos = "SELECT * FROM lineapedidos";
+			String SQLPedidos = "SELECT * FROM lineapedidos;";
 
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);

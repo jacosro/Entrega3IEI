@@ -17,7 +17,7 @@ public class ValidarPedido implements JavaDelegate {
 
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQLPedidos = "SELECT * FROM lineapedidos";
+			String SQLPedidos = "SELECT * FROM lineapedidos;";
 
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
@@ -26,13 +26,13 @@ public class ValidarPedido implements JavaDelegate {
 				while(resultPedidos.next()) {
 					int lineapedido = resultPedidos.getInt("Articulos_idArticulos");
 
-					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?";
+					String SQLArticulos = "SELECT * FROM articulos WHERE idArticulos=?;";
 					PreparedStatement statementArticulos = conn.prepareStatement(SQLArticulos);
 					statementArticulos.setInt(1, lineapedido);
 					ResultSet resultArticulos = statementPedidos.executeQuery();
 
 					if (!resultArticulos.next()) {
-						String SQLBorrarPedido = "DELETE FROM lineaspedido WHERE Articulos_idArticulos=?";
+						String SQLBorrarPedido = "DELETE FROM lineaspedido WHERE Articulos_idArticulos=?;";
 						PreparedStatement statementBorrar = conn.prepareStatement(SQLBorrarPedido);
 						statementArticulos.setInt(1, lineapedido);
 						statementArticulos.executeQuery();
