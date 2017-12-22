@@ -1,4 +1,6 @@
 import com.mysql.jdbc.Statement;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,6 +46,8 @@ public class ServicioLineaPedidos {
 			ResultSet claves = preparedStatement.getGeneratedKeys();
 			claves.next();
 			res = claves.getInt(1);
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			Log.write("Se intenta añadir un artículo que no existe");
 		} catch (SQLException e) {
 			Log.write(e);
 		}

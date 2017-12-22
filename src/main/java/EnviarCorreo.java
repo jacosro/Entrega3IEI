@@ -23,7 +23,7 @@ public class EnviarCorreo implements TaskListener {
 
 	@Override
 	public void notify(DelegateTask delegado) {
-		String mailBody = "Estos son los articulos que estan preparados para enviarle: \n";
+		String mailBody = "";
 		boolean retraso = false;
 
 		Connection conn = Conexion.abrirConexion();
@@ -44,7 +44,7 @@ public class EnviarCorreo implements TaskListener {
 						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido;
 					} else {
 						retraso = true;
-						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + cantidadPedido + "(De momento no disponemos de suficiente stock)";
+						mailBody += "\tArticulo con ID: " + lineapedido + "\tCantidad: " + (cantidadPedido*-1) + " (De momento no disponemos de la cantidad de artículos solicitada en stock)";
 					}
 					
 				}// fin while
