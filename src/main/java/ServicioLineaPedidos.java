@@ -9,7 +9,7 @@ public class ServicioLineaPedidos {
  public int insertarLineaPedido(int idCliente, int idArticulo, int cantidad) throws SQLException {
 		Connection connection = Conexion.abrirConexion();
 		// Comprobar si existe la cabecera de pedido
-		String buscarCabecera = "SELECT * FROM `Entrega3Pedidos`.`cabecerapedidos` WHERE Clientes_idClientes = ?";
+		String buscarCabecera = "SELECT * FROM cabecerapedidos WHERE Clientes_idClientes = ?";
 		PreparedStatement ps = connection.prepareStatement(buscarCabecera);
 		ps.setInt(1, idCliente);
 		ResultSet rs = ps.executeQuery();
@@ -20,7 +20,7 @@ public class ServicioLineaPedidos {
 			idCabecera = rs.getInt("idCabeceraPedidos");
 		} else {
 			// Si no, crear la cabeceraPedido
-			String insertarCabecera = "INSERT INTO `Entrega3Pedidos`.`cabecerapedidos` (Clientes_idClientes) VALUES (?)";
+			String insertarCabecera = "INSERT INTO cabecerapedidos (Clientes_idClientes) VALUES (?)";
 			PreparedStatement preparedStatement = connection.prepareStatement(insertarCabecera, Statement.RETURN_GENERATED_KEYS);
 			preparedStatement.setInt(idCliente, 1);
 			preparedStatement.executeUpdate(insertarCabecera);
@@ -29,7 +29,7 @@ public class ServicioLineaPedidos {
 			idCabecera = claves.getInt(1);
 		}
 		
-		String insertarLineaPedidos = "INSERT INTO `Entrega3Pedidos`.`lineapedidos` (Cantidad, CabeceraPedidos_idCabeceraPedidos, Articulos_idArticulos) VALUES (?,?,?)";
+		String insertarLineaPedidos = "INSERT INTO lineapedidos (Cantidad, CabeceraPedidos_idCabeceraPedidos, Articulos_idArticulos) VALUES (?,?,?)";
 		PreparedStatement preparedStatement = connection.prepareStatement(insertarLineaPedidos, Statement.RETURN_GENERATED_KEYS);
 		preparedStatement.setInt(1, cantidad);
 		preparedStatement.setInt(2, idCabecera);

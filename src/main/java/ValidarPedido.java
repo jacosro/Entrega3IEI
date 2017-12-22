@@ -17,7 +17,7 @@ public class ValidarPedido implements JavaDelegate {
 
 		Connection conn = Conexion.abrirConexion();
 		if (conn != null) {
-			String SQLPedidos = "SELECT * FROM `Entrega3procesos`.`lineapedidos`";
+			String SQLPedidos = "SELECT * FROM lineapedidos";
 
 			try {
 				PreparedStatement statementPedidos = conn.prepareStatement(SQLPedidos);
